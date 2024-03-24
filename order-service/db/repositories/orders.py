@@ -26,8 +26,6 @@ class OrderRepository:
 
     async def create(self, order_create: OrderCreate) -> OrderRead:
         db_order = Order.from_orm(order_create)
-        print('hererer!!!!!!!#######')
-        print(db_order.dict())
         self.session.add(db_order)
         await self.session.commit()
         await self.session.refresh(db_order)

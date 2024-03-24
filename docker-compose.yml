@@ -1,9 +1,26 @@
 version: "3.9"
 
 services:
+  order-service:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.order-service
+    hostname: order-service
+    container_name: order-service
+    depends_on:
+      - db_postgres
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    volumes:
+      - ./:/home/app
+    networks:
+      - barista
+
   db_postgres:
     image: postgres:14.3-alpine
-    # hostname: db_postgres
+    hostname: db_postgres
     container_name: db_postgres
     restart: on-failure
     environment:
@@ -13,15 +30,14 @@ services:
       - 5432:5432
     volumes:
       - db-postgres:/var/lib/postgresql/data
-      # - ./scripts/create_databases.sql:/docker-entrypoint-initdb.d/create_databases.sql
-    network_mode: "host"
-    # networks:
-    #   - my-net
+      - ./scripts/create_databases.sql:/docker-entrypoint-initdb.d/create_databases.sql
+    networks:
+      - barista
 
 volumes:
   db-postgres:
     driver: local
 
 networks:
-  my-net:
+  barista:
     # external: true

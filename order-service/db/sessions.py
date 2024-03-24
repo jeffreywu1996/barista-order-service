@@ -1,10 +1,13 @@
+import logging
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import Session, SQLModel, create_engine, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from core.config import settings
 from db.tables.orders import Order
+
+logger = logging.getLogger(__name__)
 
 engine = create_engine(
     url=settings.sync_database_url,
@@ -24,6 +27,7 @@ async_session = sessionmaker(
 
 
 def create_order():
+    logger.info('Creating first order. Init db.')
     order = Order(amount=10, description="First Order")
 
     with Session(engine) as session:
@@ -31,7 +35,16 @@ def create_order():
         session.commit()
 
 
-def create_tables():
-    SQLModel.metadata.drop_all(engine)
-    SQLModel.metadata.create_all(engine)
-    create_order()
+def init_tables():
+    """
+    Initialize tables if not exists
+    """
+    with Session(engine) as session:
+        first_order = session.exec(
+            select(Order).where(Order.description == "First Order")
+        ).first()
+
+    if not first_order:
+        SQLModel.metadata.drop_all(engine)
+        SQLModel.metadata.create_all(engine)
+        create_order()
