@@ -1,21 +1,26 @@
-import uuid
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 
-app = FastAPI()
+from api.router import router
+from core.config import settings
+from db.sessions import create_tables
 
-db = dict()
+app = FastAPI(
+    title=settings.title,
+    version=settings.version,
+    description=settings.description,
+    openapi_prefix=settings.openapi_prefix,
+    docs_url=settings.docs_url,
+    openapi_url=settings.openapi_url,
+)
+
+app.include_router(router, prefix=settings.api_prefix)
 
 
-@app.get("/v1/order/{order_id}")
-async def get_order(order_id: int):
-    if order_id not in db:
-        return {"message": "Order not found"}
-    return {"order_id": order_id, "status": db[order_id]}
+@app.get("/")
+async def root():
+    return {"Say": "Hello!"}
 
 
-@app.post("/v1/order")
-async def create_order():
-    db.update(
-        {"order_id": uuid.uuid4().hex, "status": "created"}
-    )
-    return {"message": "Hello World"}
+# @app.get("/init_tables", status_code=status.HTTP_200_OK, name="init_tables")
+# async def init_tables():
+#     create_tables()
