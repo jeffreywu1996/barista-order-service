@@ -21,6 +21,6 @@ async def root():
     return {"Say": "Hello!"}
 
 
-# @app.get("/init_tables", status_code=status.HTTP_200_OK, name="init_tables")
-# async def init_tables():
-#     create_tables()
+@app.get("/init_tables", status_code=status.HTTP_200_OK, name="init_tables")
+async def init_tables():
+    create_tables()

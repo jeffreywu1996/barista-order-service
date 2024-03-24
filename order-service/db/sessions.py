@@ -4,6 +4,7 @@ from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from core.config import settings
+from db.tables.orders import Order
 
 engine = create_engine(
     url=settings.sync_database_url,
@@ -22,8 +23,15 @@ async_session = sessionmaker(
 
 
 
+def create_order():
+    order = Order(amount=10, description="First Order")
+
+    with Session(engine) as session:
+        session.add(order)
+        session.commit()
 
 
 def create_tables():
     SQLModel.metadata.drop_all(engine)
     SQLModel.metadata.create_all(engine)
+    create_order()

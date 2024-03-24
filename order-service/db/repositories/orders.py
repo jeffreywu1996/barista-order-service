@@ -24,8 +24,10 @@ class OrderRepository:
 
         return results.first()
 
-    async def create(self, transaction_create: OrderCreate) -> OrderRead:
-        db_order = Order.from_orm(transaction_create)
+    async def create(self, order_create: OrderCreate) -> OrderRead:
+        db_order = Order.from_orm(order_create)
+        print('hererer!!!!!!!#######')
+        print(db_order.dict())
         self.session.add(db_order)
         await self.session.commit()
         await self.session.refresh(db_order)
@@ -49,32 +51,3 @@ class OrderRepository:
             raise EntityDoesNotExist
 
         return OrderRead(**db_order.dict())
-
-    async def patch(
-        self, order_id: UUID, transaction_patch: OrderPatch
-    ) -> Optional[OrderRead]:
-        db_order = await self._get_instance(order_id)
-
-        if db_order is None:
-            raise EntityDoesNotExist
-
-        transaction_data = transaction_patch.dict(exclude_unset=True, exclude={"id"})
-        for key, value in transaction_data.items():
-            setattr(db_order, key, value)
-
-        self.session.add(db_order)
-        await self.session.commit()
-        await self.session.refresh(db_order)
-
-        return OrderRead(**db_order.dict())
-
-    async def delete(self, order_id: UUID) -> None:
-        db_order = await self._get_instance(order_id)
-
-        if db_order is None:
-            raise EntityDoesNotExist
-
-        setattr(db_order, "status", StatusEnum.deleted)
-        self.session.add(db_order)
-
-        await self.session.commit()

@@ -17,11 +17,11 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
     name="create_order",
 )
-async def create_transaction(
-    transaction_create: OrderCreate = Body(...),
+async def create_order(
+    order_create: OrderCreate = Body(...),
     repository: OrderRepository = Depends(get_repository(OrderRepository)),
 ) -> OrderRead:
-    return await repository.create(transaction_create=transaction_create)
+    return await repository.create(order_create=order_create)
 
 
 @router.get(
