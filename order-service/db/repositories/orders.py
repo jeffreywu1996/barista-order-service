@@ -5,7 +5,7 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from db.errors import EntityDoesNotExist
-from db.tables.base_class import StatusEnum
+from db.tables.base_class import OrderStatus
 from db.tables.orders import Order
 from schemas.orders import OrderCreate, OrderPatch, OrderRead
 
@@ -18,7 +18,7 @@ class OrderRepository:
         statement = (
             select(Order)
             .where(Order.id == order_id)
-            .where(Order.status != StatusEnum.deleted)
+            .where(Order.status != OrderStatus.DELETED)
         )
         results = await self.session.exec(statement)
 
@@ -30,11 +30,11 @@ class OrderRepository:
         await self.session.commit()
         await self.session.refresh(db_order)
 
-        return OrderRead(**db_order.dict())
+        return OrderRead(**db_order.model_dump())
 
     async def list(self, limit: int = 10, offset: int = 0) -> list[OrderRead]:
         statement = (
-            (select(Order).where(Order.status != StatusEnum.deleted))
+            (select(Order).where(Order.status != OrderStatus.DELETED))
             .offset(offset)
             .limit(limit)
         )
@@ -74,7 +74,7 @@ class OrderRepository:
         if db_order is None:
             raise EntityDoesNotExist
 
-        setattr(db_order, "status", StatusEnum.deleted)
+        setattr(db_order, "status", OrderStatus.DELETED)
         self.session.add(db_order)
 
         await self.session.commit()

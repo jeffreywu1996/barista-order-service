@@ -79,12 +79,12 @@ async def delete_order(
 
 
 @router.put(
-    "/orders/{order_id}",
+    "/order/{order_id}",
     response_model=OrderRead,
     status_code=status.HTTP_200_OK,
-    name="delete_order",
+    name="update_order",
 )
-async def delete_order(
+async def update_order(
     order_id: UUID,
     order_patch: OrderPatch = Body(...),
     repository: OrderRepository = Depends(get_repository(OrderRepository)),

@@ -3,6 +3,7 @@
 
 ## Get Started
 ```
+cp .env.example .env
 make dev  # starts postgres, order-service in docker compose
 ```
 

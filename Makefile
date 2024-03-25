@@ -11,6 +11,9 @@ run:
 down:
 	@docker compose -f ./docker-compose.yml down --remove-orphans
 
+clean: down
+	@docker volume rm barista-order-service_db-postgres
+
 shell: run
 	@docker exec -it order-service bash
 

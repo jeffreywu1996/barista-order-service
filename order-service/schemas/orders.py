@@ -1,7 +1,9 @@
 from datetime import datetime
 from uuid import UUID
+from pydantic import validator
+from sqlmodel import Field, SQLModel
 
-from db.tables.orders import OrderBase, Order
+from db.tables.orders import OrderBase, CoffeeType
 
 
 class OrderCreate(OrderBase):
@@ -14,5 +16,6 @@ class OrderRead(OrderBase):
     status: str
 
 
-class OrderPatch(OrderBase):
+class OrderPatch(SQLModel):
+    status: str
     ...

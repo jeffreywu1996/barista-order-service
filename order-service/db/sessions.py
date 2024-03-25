@@ -28,7 +28,7 @@ async_session = sessionmaker(
 
 def create_order():
     logger.info('Creating first order. Init db.')
-    order = Order(amount=10, description="First Order")
+    order = Order(coffee_type="latte", quantity=0, description="First Order", status="deleted")
 
     with Session(engine) as session:
         session.add(order)

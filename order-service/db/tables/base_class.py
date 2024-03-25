@@ -5,13 +5,18 @@ from sqlalchemy import Enum, text
 from sqlmodel import Field, SQLModel
 
 
-class StatusEnum(str, Enum):
-    class Config:
-        arbitrary_types_allowed = True
-    active = "active"
-    inactive = "inactive"
-    deleted = "deleted"
+class OrderStatus(str, Enum):
+    CREATED = "created"
+    IN_PROGRESS = "in_progress"
+    READY = "ready"
+    INACTIVE = "inactive"
+    DELETED = "deleted"
 
+class CoffeeType(str, Enum):
+    AMERICANO = "americano"
+    ESPRESSO = "espresso"
+    LATTE = "latte"
+    CAPPUCCINO = "cappuccino"
 
 class UUIDModel(SQLModel):
     class Config:

@@ -20,6 +20,29 @@ services:
       - ./:/home/app
     networks:
       - barista
+    healthcheck:
+      test: curl --fail http://localhost:8000 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  barista-service:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.barista-service
+    hostname: barista-service
+    container_name: barista-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      order-service:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - ./:/home/app
+    networks:
+      - barista
 
   db_postgres:
     image: postgres:14.3-alpine
