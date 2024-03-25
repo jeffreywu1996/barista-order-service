@@ -1,4 +1,7 @@
 from sqlmodel import Field, SQLModel
+from typing import Optional
+from datetime import datetime
+from uuid import UUID
 
 from db.tables.base_class import StatusEnum, TimestampModel, UUIDModel
 

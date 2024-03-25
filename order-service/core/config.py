@@ -24,6 +24,8 @@ class GlobalConfig(BaseConfig):
     postgres_db_tests: str = os.environ.get("POSTGRES_DB_TESTS")
     db_echo_log: bool = True if os.environ.get("DEBUG") == "True" else False
 
+    rabbitmq_server: str = os.environ.get("RABBITMQ_SERVER")
+
     @property
     def sync_database_url(self) -> str:
         return f"postgresql://{self.postgres_user}:{self.postgres_password}@{self.postgres_server}:{self.postgres_port}/{self.postgres_db}"

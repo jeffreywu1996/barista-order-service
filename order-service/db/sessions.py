@@ -35,14 +35,17 @@ def create_order():
         session.commit()
 
 
-def init_tables():
+def init_tables_db():
     """
     Initialize tables if not exists
     """
     with Session(engine) as session:
-        first_order = session.exec(
-            select(Order).where(Order.description == "First Order")
-        ).first()
+        try:
+            first_order = session.exec(
+                select(Order).where(Order.description == "First Order")
+            ).first()
+        except Exception as e:
+            first_order = None
 
     if not first_order:
         SQLModel.metadata.drop_all(engine)
